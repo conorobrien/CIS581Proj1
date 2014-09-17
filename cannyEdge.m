@@ -1,0 +1,61 @@
+function edge = cannyEdge(I)
+    
+    % find gradient of I using derivative of a gaussian
+	[Jx, Jy] = computeImageGradients(I);
+    
+    % Find magnitude and direction of gradient
+    J = sqrt(Jx.*Jx + Jy.*Jy);
+    theta = atan2(Jx, Jy);
+    
+    % zero-pad both J and theta
+    J = padarray(J, [1 1]);
+    theta = padarray(theta, [1 1]);
+    
+    % define high and low thresholds for edge detection (arbitrary for now)
+    T_high = .2;
+    T_low = .1;
+
+    % Automatically mark everything below low threshold as visited
+    visited = J < T_low;
+    following_gradient = false;
+    
+    while sum(sum(J > T_high))
+
+    	if ~following_gradient
+			% Find starting pixel for search, change to max later
+	    	[R, C] = find(J>T_high, 1, 'first');
+	    end
+
+    	current = J(R,C);
+    	visited(R,C) = true;
+
+    	[ahead, behind] = getGradientNeighbors(J(R-1:R+1, C-1:C+1), theta(R,C));
+
+    	if current < behind
+    		following_gradient = false;
+    		continue
+    	end
+
+    	if current <= ahead
+    		following_gradient = true;
+    		[R,C] = followNeighbor(R,C,theta(R,C));
+    	end
+
+    	if current > ahead
+    		disp(['Edge at ', num2str(R), ',', num2str(C)]);
+    		break;
+
+    	end
+    end
+end
+   %  		% You've found an edge
+   %  		edge(R,C) = true;
+   %  		following_gradient = true;
+
+   %  		Redge = R;
+   %  		Cedge = C;
+
+   %  		% need to come back to found edge and go the other drection
+   %  		% don't know how
+   %  		% next step is going to be perpindicular to current positions
+			% [R, C] = perpNeighbor(R,C,theta(R,C), 'left');

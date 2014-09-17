@@ -1,12 +1,16 @@
-function [ xGrad, yGrad ] = computeImageGradients( I )
+function [ Jx, Jy ] = computeImageGradients( I )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
-G = fspecial('gaussian', 3);
+paddedI = addMirrorPadding(I, 2, 2);
+
+G = fspecial('gaussian', 5);
 [dx, dy] = gradient(G);
 
-xGrad = conv2(I, dx, 'same');
-yGrad = conv2(I, dy, 'same');
+Jx = conv2(paddedI, dx, 'valid');
+Jy = conv2(paddedI, dy, 'valid');
 
+Jx(:,1) = 0;
+Jy(1,:) = 0;
 end
 

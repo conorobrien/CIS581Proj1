@@ -1,35 +1,42 @@
-function [ neighborsRelativeIndices, neighborsAngleRange ] = ...
-    getGradientNeighbors( angle )
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+function [ ahead, behind ] = getGradientNeighbors(local, theta )
 
-neighborsRelativeIndices = [0, 0; 0, 0];
-neighborsAngleRange = [0, 0];
+if theta == pi
+    theta_mod = pi;
+else
+theta_mod = mod(theta, pi);
+end
 
-if (angle >= 0 && angle <= 45)
-    neighborsRelativeIndices = [0, 1; -1, 1];
-    neighborsAngleRange = [0; 45];
-elseif (angle > 45 && angle <= 90)
-    neighborsRelativeIndices = [-1, 1; -1, 0;];
-    neighborsAngleRange = [45; 90];
-elseif (angle > 90 && angle <= 135)
-    neighborsRelativeIndices = [-1, 0; -1, -1];
-    neighborsAngleRange = [90; 135];
-elseif (angle > 135 && angle <= 180)
-    neighborsRelativeIndices = [-1, -1; 0, -1];
-    neighborsAngleRange = [135; 180];
-elseif (angle > 180 && angle <= 225)
-    neighborsRelativeIndices = [0, -1; 1, -1];
-    neighborsAngleRange = [180; 225];
-elseif (angle > 225 && angle <= 270)
-    neighborsRelativeIndices = [1, -1; 1, 0];
-    neighborsAngleRange = [225; 270];
-elseif (angle > 270 && angle <= 315)
-    neighborsRelativeIndices = [1, 0; 1, 1];
-    neighborsAngleRange = [270; 315];
-elseif (angle > 315 && angle <= 360)
-    neighborsRelativeIndices = [1, 1; 0, 1];
-    neighborsAngleRange = [315; 360];
+if (theta_mod >= 0 && theta_mod <= pi/4)
+    points1 = local(2:-1:1, 3);
+    points2 = local(2:3, 1);
+    interpolated1 = interp1([0 1], points1, abs(tan(theta_mod)));
+    interpolated2 = interp1([0 1], points2, abs(tan(theta_mod)));
+
+elseif (theta_mod > pi/4 && theta_mod <= pi/2)
+    points1 = local(1, 2:3);
+    points2 = local(3, 2:-1:1);
+    interpolated1 = interp1([0 1], points1, abs(cot(theta_mod)));
+    interpolated2 = interp1([0 1], points2, abs(cot(theta_mod)));
+
+elseif (theta_mod > pi/2 && theta_mod <= 3*pi/4)
+    points1 = local(1, 2:-1:1);
+    points2 = local(3, 2:3);
+    interpolated1 = interp1([0 1], points1, abs(cot(theta_mod)));
+    interpolated2 = interp1([0 1], points2, abs(cot(theta_mod)));
+
+elseif (theta_mod > 3*pi/4 && theta_mod <= pi)
+    points1 = local(2:-1:1, 1);
+    points2 = local(2:3, 3);
+    interpolated1 = interp1([0 1], points1, abs(tan(theta_mod)));
+    interpolated2 = interp1([0 1], points2, abs(tan(theta_mod)));
+end
+
+if theta >= 0
+    ahead = interpolated1;
+    behind = interpolated2;
+else
+    ahead = interpolated2;
+    behind = interpolated1;
 end
 
 end

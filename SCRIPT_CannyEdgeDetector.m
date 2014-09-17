@@ -14,7 +14,7 @@ I = double(I);
 % I = I(1:5:end, 1:5:end);
 % I changed the image, this one is just b/w and has lots of different edges
 % I = double(0.5*(I(:, :, 1) + I(:, :, 2)));
-paddedI = addMirrorPadding(I, 1, 1);
+% paddedI = addMirrorPadding(I, 1, 1);
 
 %Added a bit of smoothing before computing the gradient
 % Is = conv2(I, ones(3), 'same');
@@ -31,7 +31,7 @@ J = sqrt(Jx.*Jx + Jy.*Jy); % image gradient magnitude.
 
 figure(1);
 clf;
-imagesc(paddedI);
+imagesc(I);
 colormap('gray');
 axis image;
 title('Original Image');
@@ -46,9 +46,11 @@ colormap jet;
 
 figure(3);
 clf;
-gradientDirection = atan2(Jy, Jx);
-imagesc(gradientDirection.*(J > 5));
-colormap(hsv); 
+gradientDirection = mod(atan2(Jy, Jx), 2*pi);
+gradientDirection(J<5) = -1;
+gradientDirection(J>=5) = 10*gradientDirection(J>=5);
+imagesc(gradientDirection);
+colormap(jet); 
 colorbar;
 axis image;
 
