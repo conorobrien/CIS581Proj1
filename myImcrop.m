@@ -12,10 +12,11 @@ thisImage = I;
 figure(1);
 image(thisImage);
 axis equal;
+colormap gray;
 title('Original Image');
 
 % prompts the user to crop out a sub-image
-fprintf('Click the \n1) top left corner \n2) the bottom right corner \nof the subimage you would like to crop.');
+% fprintf('Click the \n1) top left corner \n2) the bottom right corner \nof the subimage you would like to crop.');
 [x, y] = ginput(2);
 
 x = round(x);
@@ -24,12 +25,12 @@ y = round(y);
 % displays and returns the sub-image
 
 subImage = thisImage(min(y) : max(y), min(x) : max(x), :);
-
-figure(2);
-image(subImage);
-axis equal;
-title('Cropped Image');
-
+% 
+% figure(2);
+% image(subImage);
+% axis equal;
+% title('Cropped Image');
+close(1)
 J = subImage;
 
 end

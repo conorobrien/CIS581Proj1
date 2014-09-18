@@ -10,7 +10,7 @@ G = fspecial('gaussian', 5);
 Jx = conv2(paddedI, dx, 'valid');
 Jy = conv2(paddedI, dy, 'valid');
 
-Jx(:,1) = 0;
-Jy(1,:) = 0;
+% Jx(:,1) = 0;
+% Jy(1,:) = 0;
 end
 

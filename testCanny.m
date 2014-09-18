@@ -2,13 +2,15 @@
 
 %% 
 addpath('train_images_P1');
-I = imread('I1.jpg');
+I = imread('118035.jpg');
 I = double(I);
-I = I(1:5:end, 1:5:end);
+I = .5*I(:,:,1) + .5*I(:,:,2);
+% I = I(1:2:end, 1:2:end);
 
-I = myImcrop(I);
+% I = myImcrop(I);
 
-% I = [ones(10,5)*20, zeros(10,5)]';
+% I = triu(ones(10,10))*50;
+% I = [ones(10,5)*50, zeros(10,5)]';
 
 % I = [ones(5,5)*20, zeros(5,5);  zeros(5,5),  zeros(5,5)];
 figure(1); clf; imagesc(I); axis image; colormap gray;
